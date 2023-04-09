@@ -1,6 +1,7 @@
 package cl.uchile.dcc
 package gwent.card
 
-class Card {
-
+trait Card{
+  val name: String
+  val: classification: String
 }

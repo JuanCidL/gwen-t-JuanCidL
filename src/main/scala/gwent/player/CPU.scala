@@ -1,13 +1,22 @@
 package cl.uchile.dcc
 package gwent.player
 
+import java.util.Objects
+
 /** A class representing a computer
  *
- * This player is defined by a name and amount of gems
+ * This player is defined by a name
  *
  * @param name The name of the user
- * @param gems The amount of gems
  */
-class CPU(val name: String, var gems: Int) extends Player {
+class CPU(name: String) extends AbstractPlayer(name) {
+  var board: String = ""
+  var gems: Int = 0
+
+  /** Not yet
+   */
+  def play(): Unit = {}
+
+  override def hashCode(): Int = Objects.hash(classOf[CPU], name)
 
 }

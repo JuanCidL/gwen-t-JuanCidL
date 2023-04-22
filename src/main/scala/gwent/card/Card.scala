@@ -3,5 +3,5 @@ package gwent.card
 
 trait Card{
   val name: String
-  val: classification: String
+  val classification: String
 }

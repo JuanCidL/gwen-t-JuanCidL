@@ -3,14 +3,17 @@ package gwent.player
 
 import gwent.card.Card
 
+import scala.collection.mutable.ListBuffer
+
 trait Player {
   val name: String
   var board: String
   var gems: Int
-  var dCards: Array[Card]
-  var hCards: Array[Card]
-  def play: Unit
-  def take: Unit
-  def countdCards: Int
-  def counthCards: Int
+  val deckCards: ListBuffer[Card]
+  val handCards: ListBuffer[Card]
+  def play(): Unit
+  def take(): Unit
+  def countDeckCards(): Int
+  def countHandCards(): Int
+  def deckShuffle(): Unit
 }

@@ -1,19 +1,26 @@
 package cl.uchile.dcc
 package gwent.card
 
+import cl.uchile.dcc.gwent.board.BoardSection
+
 import java.util.Objects
 
-/** A class representing a unit card
+/** Abstract class representing a unit card.
  * 
- * @param name The name of the card
- * @param classification The classification of the card
+ * @param name The name of the card.
+ * @param description The description of the card, explaining its abilities.
+ * @param strength The strength of the card.
  */
-class UnitCard(name: String, classification: String)
-        extends AbstractCard(name, classification) {
-  
-  private var _strength = 0
+abstract class UnitCard(val name: String, val description: String, val strength: Int)
+        extends Card {
 
-  def strength(st: Int): Unit = _strength = st
-  
+  //var currentStrength = strength
+
+  override def equals(obj: Any): Boolean = {
+    if (this.getClass.getName == obj.getClass.getName) {
+      val other = obj.asInstanceOf[Card]
+      this.name == other.name && this.description == other.description
+    } else false
+  }
   override def hashCode(): Int = Objects.hash(classOf[UnitCard], name)
 }

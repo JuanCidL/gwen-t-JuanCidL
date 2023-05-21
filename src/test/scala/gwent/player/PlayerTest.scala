@@ -1,85 +1,67 @@
 package cl.uchile.dcc
 package gwent.player
 
+import gwent.card.{Card, MeleeCard, RangedCard, SiegeCard}
 import munit.FunSuite
 
-class PlayerTest extends FunSuite {
-  var usr1: User = _
-  var usr2: User = _
-  var cpu1: CPU = _
-  var cpu2: CPU = _
+class PlayerTest extends FunSuite{
+  var plyr1: Player = _
+  var plyr2: Player = _
+
+  val escuero: MeleeCard = new MeleeCard("Escuero", "Tortuguita", 20)
+  val exodia: RangedCard = new RangedCard("Exodia", "El prohibido", 999)
+  val tilin: SiegeCard = new SiegeCard("Tilin", "Eso tilin", 100)
+
+  var deck1: List[Card] = _
+  var deck2: List[Card] = _
+  var hand1: List[Card] = _
+  var hand2: List[Card] = _
+
+
 
   override def beforeEach(context: BeforeEach): Unit = {
-    usr1 = new User("Pedro")
-    usr1.addCard()
-    usr1.addCard()
-    usr1.addCard()
-    usr1.addCard()
-
-    usr2 = new User("Juan")
-    usr2.addCard()
-
-
-    cpu1 = new CPU("Diego")
-    cpu1.addCard()
-    cpu1.addCard()
-    cpu1.addCard()
-    cpu1.addCard()
-
-    cpu2 = new CPU("Pedro")
-    cpu2.addCard()
-    cpu2.addCard()
+    deck1 = List(escuero, exodia, exodia, tilin)
+    deck2 = List(exodia, tilin, escuero)
+    hand1 = List()
+    hand2 = List()
+    
+    plyr1 = new Player("Pedro", 3, deck1, hand1)
+    plyr2 = new Player("Fernando", 3, deck2, hand2)
   }
 
-  test("Son jugadores iguales"){
-    usr1 = new User("Pepito")
-    usr2 = new User("Pepito")
-    cpu1 = new CPU("Pepito")
-    cpu2 = new CPU("Pepito")
-    assertEquals(usr1, usr2)
-    assertEquals(cpu1, cpu2)
-  }
-  test("Son jugadores distintos"){
-    assertNotEquals(usr1, usr2)
-    assertNotEquals(cpu1, cpu2)
-  }
-  test("Hashcode iguales"){
-    usr1 = new User("Pepito")
-    usr2 = new User("Pepito")
-    cpu1 = new CPU("Pepito")
-    cpu2 = new CPU("Pepito")
-    assertEquals(usr1.##, usr2.##)
-    assertEquals(cpu1.##, cpu2.##)
-  }
-  test("Hashcode distintos"){
-    assertNotEquals(usr1.##, usr2.##)
-    assertNotEquals(cpu1.##, cpu2.##)
+  test("Shufle"){
+    plyr1.shuffleDeck()
+    assertEquals(plyr1.countHand, 0)
+    assertEquals(plyr1.countDeck, 4)
   }
 
-  test("Tiene mas cartas en mazo"){
-    assert(usr1.countDeckCards() > cpu2.countDeckCards())
-  }
-  test("Tiene menos cartas en mazo"){
-    assert(usr2.countDeckCards() < cpu1.countDeckCards())
-  }
-  test("Tienen igual cantidad de cartas en mazo"){
-    assertEquals(usr1.countDeckCards(), cpu1.countDeckCards())
+  test("Tiene 4 cartas en mazo"){
+    assertEquals(plyr1.countDeck,4)
   }
 
-  test("Metodo take"){
-    // Tamaño del mazo y mano
-    val deckLength = usr1.countDeckCards()
-    val handLength = usr1.countHandCards()
-    //se toma 1 carta del mazo a la mano
-    usr1.take()
-    //se comprueban los cambios
-    assertEquals(usr1.countDeckCards(), deckLength - 1)
-    assertEquals(usr1.countHandCards(), handLength + 1)
-    //se toman 2 cartas del mazo a la mano
-    usr1.take()
-    usr1.take()
-    //se comprueban los cambios
-    assertEquals(usr1.countDeckCards(), deckLength - 3)
-    assertEquals(usr1.countHandCards(), handLength + 3)
+  test("Prueba metodo drawCard"){
+    plyr1.drawCard()
+    assertEquals(plyr1.countHand, 1)
+    assertEquals(plyr1.countDeck,3)
+    plyr1.drawCard()
+    plyr1.drawCard()
+    plyr1.drawCard()
+    assertEquals(plyr1.countHand, 4)
+    assertEquals(plyr1.countDeck,0)
+  }
+
+  test("Jugadores distintos (equals + hash)"){
+    assertNotEquals(plyr1, plyr2)
+    assertNotEquals(plyr1.##, plyr2.##)
+  }
+
+  test("Jugadores iguales (equals + hash)") {
+    plyr2 = new Player("Pedro", 0, deck2, hand1)
+    assertEquals(plyr1, plyr2)
+    assertEquals(plyr1.##, plyr2.##)
+  }
+
+  test("Objetos diferentes"){
+    assert(!(plyr1 == escuero))
   }
 }

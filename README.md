@@ -41,3 +41,9 @@ The board consists of 2 classes: the first is a board section, and the second is
 ## Player
 
 The player is a class that is identified by their name. In its constructor it receives its name, a gem counter, and its deck and hand of cards. The player has the ability to shuffle their deck, play a card on the board and also has their respective methods to handle those attributes.
+
+<div style="text-align: center;"> <h2> UML: </h2> 
+
+![UML.png](src%2FUML.png)
+
+</div>

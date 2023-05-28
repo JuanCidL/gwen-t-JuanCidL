@@ -46,6 +46,9 @@ class PlayerTest extends FunSuite{
     plyr1.drawCard()
     plyr1.drawCard()
     plyr1.drawCard()
+    assert(!plyr1.deck.contains(escuero))
+    assert(!plyr1.deck.contains(exodia))
+    assert(!plyr1.deck.contains(tilin))
     assertEquals(plyr1.countHand, 4)
     assertEquals(plyr1.countDeck,0)
   }

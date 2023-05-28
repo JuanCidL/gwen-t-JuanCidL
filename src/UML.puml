@@ -1,0 +1,84 @@
+@startuml
+
+class Player{
+    +name: String
+    +gems: Int
+    -_deck: List[Card]
+    -_hand: List[Card]
+    -_boardSection: BoardSection
+    +boardSection(): BoardSection
+    +boardSection_(): BoardSection
+    +deck(): List[Card]
+    +hand(): List[Card]
+    +drawCard(): Unit
+    +playCard(card: Card): Unit
+    +shuffleDeck(): Unit
+    +countDeck(): Int
+    +countHand(): Int
+}
+
+interface Card{
+    +name: String
+    +description: String
+    +play(section: BoardSection): Unit
+}
+abstract class UnitCard{
+    +name: String
+    +description: String
+    +strength: Int
+    +equals(obj: Any): Boolean
+    +hashCode(): Int
+}
+class MeleeCard{
+    +play(): Unit
+}
+class RangedCard{
+    +play(): Unit
+}
+class SiegeCard{
+    +play(): Unit
+}
+class WeatherCard{
+    +name: String
+    +description: String
+    +play(): Unit
+    +equals(obj: Any): Boolean
+    +hashCode(): Int
+}
+
+class Board{
+    -_weatherCardZone: WeatherCard
+    -_p1Zone: BoardSection
+    -_p2Zone: BoardSection
+    +weatherCardZone(): WeatherCard
+    +weatherCardZone_(card: WeatherCard): Unit
+    +p1Zone(): BoardSection
+    +p2Zone(): BoardSection
+}
+class BoardSection{
+    +board: Board
+    -meleeZone: List[MeleeCard]
+    -rangedZone: List[RangedCard]
+    -siegeZone: List[SiegeCard]
+    +contains(card: Card): Boolean
+    +playMeleeCard(card: MeleeCard): Unit
+    +playRangedCard(card: RangedCard): Unit
+    +playSiegeCard(card: SiegeCard): Unit
+    +playWeatherCard(card: WeatherCard): Unit
+}
+
+Player o-- Card
+Player <-- BoardSection
+
+Card <|.. UnitCard
+Card <|.. WeatherCard
+UnitCard <|-- MeleeCard
+UnitCard <|-- RangedCard
+UnitCard <|-- SiegeCard
+
+Board o--> BoardSection
+Board <-- WeatherCard
+
+BoardSection o-- Card
+
+@enduml

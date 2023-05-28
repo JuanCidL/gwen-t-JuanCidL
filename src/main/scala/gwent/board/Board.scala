@@ -11,28 +11,33 @@ import gwent.card.WeatherCard
  * This class is responsible for the weather card zone.
  */
 class Board {
-  /** Weather cards board section */
-  private var weatherCardZone: WeatherCard = _
+  /** Weather cards board section (it starts with a empty card) */
+  private var _weatherCardZone: WeatherCard = new WeatherCard("", "")
+
+  /** Get the card of the weather zone
+   * @return the card on the weather zone
+   */
+  def weatherCardZone: WeatherCard = _weatherCardZone
+
+  /** Set a card to the weather zone
+   * @param card the weather card to put on the board
+   */
+  def weatherCardZone_(card: WeatherCard): Unit = {
+    _weatherCardZone = card
+  }
   /** Player 1’s board section */
-  val p1BoardSection: BoardSection = new BoardSection(this)
+  private val _p1Zone: BoardSection = new BoardSection(this)
+
+  /** Gets the zone of the player 1
+   * @return the zone of the player 1
+   */
+  def p1Zone: BoardSection = _p1Zone
+  
   /** Player 2’s board section */
-  val p2BoardSection: BoardSection = new BoardSection(this)
-
-  /** Set the weather card on the board
-   *
-   * @param card The new weather card on the board
+  private val _p2Zone: BoardSection = new BoardSection(this)
+  
+  /** Gets the zone of the player 2
+   * @return the zone of the player 2
    */
-  def playWeatherCard(card: WeatherCard): Unit = {
-    weatherCardZone = card
-  }
-
-
-  /** Check if a weather card is in the board
-   *
-   * @param card the card to check.
-   * @return true if the weather card is that card; false otherwise.
-   */
-  def contains(card: WeatherCard): Boolean = {
-    weatherCardZone == card
-  }
+  def p2Zone: BoardSection = _p2Zone
 }

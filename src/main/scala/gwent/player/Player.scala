@@ -24,13 +24,11 @@ class Player(val name: String, var gems: Int, private var _deck: List[Card], pri
   /** Board section of the player */
   private var _boardSection: BoardSection = _
 
-  /* Aun no tiene uso practico
   /** Get the player's board section.
    *
    * @return The current board section
    */
   def boardSection: BoardSection = _boardSection
-  */
 
   /** Set the player's board section.
    *
@@ -67,7 +65,7 @@ class Player(val name: String, var gems: Int, private var _deck: List[Card], pri
    */
   def playCard(card: Card): Unit = {
     if (hand.contains(card)) {
-      card.play(_boardSection)
+      card.play(boardSection)
       var isFirst = true
       _hand = hand.filter { c =>
         if (c == card && isFirst) {

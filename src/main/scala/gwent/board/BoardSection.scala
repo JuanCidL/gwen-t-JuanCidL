@@ -56,6 +56,6 @@ class BoardSection(board: Board) {
    * @param card the card to play on the board
    */
   def playWeatherCard(card: WeatherCard): Unit = {
-    board.playWeatherCard(card)
+    board.weatherCardZone_(card)
   }
 }

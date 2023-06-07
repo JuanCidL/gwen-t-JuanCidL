@@ -1,0 +1,24 @@
+@startuml
+
+state Initialization: The initial state of the game.
+state InGame {
+    state start <<inputpin>>
+    state end <<outputpin>>
+    state PlayerPlaying: The state where the player plays their cards.
+    state CPUPlaying: The state where the computer plays their cards.
+    start --> PlayerPlaying
+    start --> CPUPlaying
+    PlayerPlaying --> CPUPlaying: endTurn
+    CPUPlaying --> PlayerPlaying: endTurn
+    PlayerPlaying --> end
+    CPUPlaying --> end
+}
+state EndGame: The end state of the game
+
+
+[*] -> Initialization
+Initialization --> start: gameStart
+end --> EndGame: endGame
+EndGame --> start: restart
+
+@enduml

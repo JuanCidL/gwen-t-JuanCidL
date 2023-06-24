@@ -1,7 +1,10 @@
 package cl.uchile.dcc
 package gwent.board
 
-import gwent.card.{Card, MeleeCard, RangedCard, SiegeCard, WeatherCard}
+import gwent.card.{Card, MeleeCard, RangedCard, SiegeCard, UCard, WeatherCard}
+
+import gwent.card.effect.Effect
+import gwent.observer.Observer
 
 /** Class representing a board section from one player.
  *
@@ -9,14 +12,26 @@ import gwent.card.{Card, MeleeCard, RangedCard, SiegeCard, WeatherCard}
  *
  * @param board The board linked to this section
  */
-class BoardSection(board: Board) {
+class BoardSection(board: Board) extends Observer {
   
   /** List for Melee cards zone */
-  private var meleeZone: List[MeleeCard] = List()
+  private val meleeZone: CardList = new CardList()
   /** List for Ranged cards zone */
-  private var rangedZone: List[RangedCard] = List()
+  private val rangedZone: CardList = new CardList()
   /** List for Siege cards zone */
-  private var siegeZone: List[SiegeCard] = List()
+  private val siegeZone: CardList = new CardList()
+
+  /** Apply the effect of the observable to all the cards of the player
+   * with the same type of the observable.
+   *
+   * @param observable A obserbable object to shot a update in the observer.
+   * @param value      a value to use in the update.
+   */
+  def update(observable: Card, value: Effect): Unit = {
+    value(observable, meleeZone)
+    value(observable, rangedZone)
+    value(observable, siegeZone)
+  }
 
   /** Check if the board section contains a card.
    * 
@@ -32,7 +47,8 @@ class BoardSection(board: Board) {
    * @param card The card to play on the board.
    */
   def playMeleeCard(card: MeleeCard): Unit = {
-    meleeZone = card :: meleeZone
+    meleeZone.addCard(card)
+    card.addObserver(meleeZone)
   }
 
   /** This method has the purpose of placing the ranged card in its corresponding zone.
@@ -40,7 +56,8 @@ class BoardSection(board: Board) {
    * @param card the card to play on the board
    */
   def playRangedCard(card: RangedCard): Unit = {
-    rangedZone = card :: rangedZone
+    rangedZone.addCard(card)
+    card.addObserver(rangedZone)
   }
 
   /** This method has the purpose of placing the siege card in its corresponding zone.
@@ -48,7 +65,8 @@ class BoardSection(board: Board) {
    * @param card the card to play on the board
    */
   def playSiegeCard(card: SiegeCard): Unit = {
-    siegeZone = card :: siegeZone
+    siegeZone.addCard(card)
+    card.addObserver(siegeZone)
   }
 
   /** This method has the purpose of placing the weather card in its corresponding zone.
@@ -57,5 +75,6 @@ class BoardSection(board: Board) {
    */
   def playWeatherCard(card: WeatherCard): Unit = {
     board.weatherCardZone_(card)
+    card.addObserver(board)
   }
 }

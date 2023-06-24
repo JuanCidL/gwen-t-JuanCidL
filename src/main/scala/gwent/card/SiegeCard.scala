@@ -21,5 +21,12 @@ class SiegeCard(name: String, description: String, strength: Int) extends UnitCa
    */
   def play(section: BoardSection): Unit = {
     section.playSiegeCard(this)
+    notifyObserver(effect)
   }
+
+  /** Check if the card is a siege card.
+   *
+   * @return true if the card is a siege card, false otherwise.
+   */
+  override def isSiege: Boolean = true
 }

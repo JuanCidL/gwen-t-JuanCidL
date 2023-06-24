@@ -21,5 +21,12 @@ class MeleeCard(name: String, description: String, strength: Int) extends UnitCa
    */
   def play(section: BoardSection): Unit = {
     section.playMeleeCard(this)
+    notifyObserver(effect)
   }
+
+  /** Check if the card is a melee card.
+   *
+   * @return true if the card is a melee card, false otherwise.
+   */
+  override def isMelee: Boolean = true
 }

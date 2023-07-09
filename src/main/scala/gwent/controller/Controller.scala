@@ -2,6 +2,7 @@ package cl.uchile.dcc
 package gwent.controller
 
 import gwent.observer.{Observer, Subject}
+import gwent.player.Player
 
 /** Class representing a controller for the card game.
  *
@@ -9,10 +10,10 @@ import gwent.observer.{Observer, Subject}
  * such as cards, players and boards.
  * In addition, it is responsible for changing states according to the flow of the game.
  */
-class Controller() extends Observer[String]{
+class Controller() extends Observer[Player]{
 
-  def update(observable: Subject[String], value: String): Unit = {
-    println(s"${value} has been defeated")
+  def update(observable: Subject[Player], value: Player): Unit = {
+    println(s"${value.name} has been defeated with ${value.gems} gems")
   }
 
   /** Current state of the game */

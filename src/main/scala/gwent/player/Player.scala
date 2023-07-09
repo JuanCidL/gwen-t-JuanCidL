@@ -21,19 +21,19 @@ import java.util.Objects
  * @param _hand The hand of the player.
  */
 class Player(val name: String, private var _gems: Int, private var _deck: List[Card], private var _hand: List[Card])
-    extends Subject[String]{
+    extends Subject[Player]{
 
   /** Board section of the player */
   private var _boardSection: BoardSection = _
 
   /** List of observers */
-  private var observers: List[Observer[String]] = List()
+  private var observers: List[Observer[Player]] = List()
 
   /** Add a observer to the observer list.
    *
    * @param observer the new observer to add.
    */
-  def addObserver(observer: Observer[String]): Unit = {
+  def addObserver(observer: Observer[Player]): Unit = {
     observers = observer :: observers
   }
 
@@ -42,7 +42,7 @@ class Player(val name: String, private var _gems: Int, private var _deck: List[C
    *
    * @param value a Int value to notify to the observers of the subject.
    */
-  def notifyObserver(value: String): Unit = {
+  def notifyObserver(value: Player): Unit = {
     for (observer <- observers) {
       observer.update(this, value)
     }
@@ -61,7 +61,7 @@ class Player(val name: String, private var _gems: Int, private var _deck: List[C
   def gems_(gems: Int): Unit = {
     _gems = gems
     if (gems <= 0)
-      notifyObserver(name)
+      notifyObserver(this)
   }
 
   /** Get the player's board section.
@@ -74,7 +74,9 @@ class Player(val name: String, private var _gems: Int, private var _deck: List[C
    *
    * @param newBoardSection The board section to set.
    */
-  def boardSection_(newBoardSection: BoardSection): Unit = {_boardSection = newBoardSection}
+  def boardSection_(newBoardSection: BoardSection): Unit = {
+    _boardSection = newBoardSection
+  }
 
   /** Getter of the player's deck.
    * return the deck of the player.

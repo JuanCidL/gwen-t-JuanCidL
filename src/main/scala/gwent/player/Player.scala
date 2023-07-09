@@ -2,8 +2,9 @@ package cl.uchile.dcc
 package gwent.player
 
 import gwent.card.Card
-
 import gwent.board.BoardSection
+
+import gwent.observer.{Observer, Subject}
 
 import scala.util.Random
 import java.util.Objects
@@ -15,14 +16,53 @@ import java.util.Objects
  * It also has a section of the board where you can play your hand of cards.
  *
  * @param name The name of the player.
- * @param gems The amount of gems of the player.
+ * @param _gems The amount of gems of the player.
  * @param _deck The deck of the player.
  * @param _hand The hand of the player.
  */
-class Player(val name: String, var gems: Int, private var _deck: List[Card], private var _hand: List[Card]) {
+class Player(val name: String, private var _gems: Int, private var _deck: List[Card], private var _hand: List[Card])
+    extends Subject[String]{
 
   /** Board section of the player */
   private var _boardSection: BoardSection = _
+
+  /** List of observers */
+  private var observers: List[Observer[String]] = List()
+
+  /** Add a observer to the observer list.
+   *
+   * @param observer the new observer to add.
+   */
+  def addObserver(observer: Observer[String]): Unit = {
+    observers = observer :: observers
+  }
+
+
+  /** Apply update method to all observers in the observer list.
+   *
+   * @param value a Int value to notify to the observers of the subject.
+   */
+  def notifyObserver(value: String): Unit = {
+    for (observer <- observers) {
+      observer.update(this, value)
+    }
+  }
+
+  /** Get the number of gems of the player
+   * @return
+   */
+  def gems: Int = _gems
+
+  /** Set the number of gems.
+   * Also notify it to the observer if the gems are lower or equal than 0.
+   *
+   * @param gems the new number of gems
+   */
+  def gems_(gems: Int): Unit = {
+    _gems = gems
+    if (gems <= 0)
+      notifyObserver(name)
+  }
 
   /** Get the player's board section.
    *

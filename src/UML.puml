@@ -17,12 +17,12 @@ class Player{
     +countHand(): Int
 }
 
-interface Subject{
-    +addObserver(observer: Observer): Unit
+interface CardSubject{
+    +addObserver(observer: CardObserver): Unit
     +notifyObserver(value: Effect): Unit
 }
 
-interface Observer{
+interface CardObserver{
     +update(observable: Card, value: Effect): Unit
 }
 
@@ -30,7 +30,7 @@ interface Card{
     +name: String
     +description: String
     #effect: Effect
-    #observers: List[Observer]
+    #observers: List[CardObserver]
     +setEffect(e: Effect): Unit
     +play(section: BoardSection): Unit
 }
@@ -48,10 +48,10 @@ abstract class UnitCard{
     +description: String
     +strength: Int
     #effect: Effect
-    #observers: List[Observer]
+    #observers: List[CardObserver]
     +setEffect(e: Effect)
-    +addObserver(observer: Observer): Unit
-    +notifyObserver(value: Effect): Unit
+    +addCardObserver(observer: CardObserver): Unit
+    +notifyCardObserver(value: Effect): Unit
     +isMelee(): Boolean
     +isRanged(): Boolean
     +isSiege(): Boolean
@@ -74,10 +74,10 @@ class WeatherCard{
     +name: String
     +description: String
     #effect: Effect
-    #observers: List[Observer]
+    #observers: List[CardObserver]
     +setEffect(e: Effect)
-    +addObserver(observer: Observer): Unit
-    +notifyObserver(value: Effect): Unit
+    +addCardObserver(observer: CardObserver): Unit
+    +notifyCardObserver(value: Effect): Unit
     +play(): Unit
     +equals(obj: Any): Boolean
     +hashCode(): Int
@@ -110,7 +110,7 @@ class CardList{
     +update(observable: Card, value: Effect): Unit
     +cards(): List[UCard]
     +addCard(card: UCard): Unit
-    +contains(card: Subject): Boolean
+    +contains(card: CardSubject): Boolean
 }
 
 class Controller{
@@ -213,7 +213,7 @@ Player <-- BoardSection
 /' End '/
 
 /' Cards relations '/
-Subject <|..Card
+CardSubject <|..Card
 Card <|.. UCard
 UCard <|.. UnitCard
 Card <|... WeatherCard
@@ -233,21 +233,21 @@ GameState <-- ErrorState
 /' End '/
 
 /' Start observer relation UML '/
-Subject <- Observer
-Card o-- Observer
+CardSubject <- CardObserver
+Card o-- CardObserver
 
-Observer <|.. Board
+CardObserver <|.. Board
 Board o--> BoardSection
 Board <-- WeatherCard
 
-Observer <|.. BoardSection
+CardObserver <|.. BoardSection
 BoardSection o-- Card
 BoardSection o-- CardList
 /' End '/
 
 /' Effects '/
-/'Observer <-- Effect
-Subject <-- Effect'/
+/'CardObserver <-- Effect
+CardSubject <-- Effect'/
 Card <-- Effect
 Effect <|... NullEffect
 Effect <|.. MoraleBooster

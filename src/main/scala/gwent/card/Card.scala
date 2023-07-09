@@ -10,7 +10,7 @@ import gwent.observer.{Observer, Subject}
  * A card is characterized by its name and description that identifies it.
  * These parameters are immutable.
  */
-trait Card  extends Subject{
+trait Card  extends Subject[Effect]{
   /** The name of the card */
   val name: String
   /** The description of the card */
@@ -18,7 +18,7 @@ trait Card  extends Subject{
   /** The effect of the card */
   protected var effect: Effect
   /** The observers of the card */
-  protected var observers: List[Observer]
+  protected var observers: List[Observer[Effect]]
 
   /** Set an effect for the card.
    *

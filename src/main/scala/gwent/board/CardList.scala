@@ -2,24 +2,23 @@ package cl.uchile.dcc
 package gwent.board
 
 import gwent.card.effect.Effect
-import gwent.card.{Card, UCard}
-
+import gwent.card.UCard
 import gwent.observer.{Observer, Subject}
 
 /** Class representing a list of Cards
  */
-class CardList extends Observer {
+class CardList extends Observer[Effect] {
   private var _cards: List[UCard] = List()
 
   /** Apply the effect of the observable object to all cards
    * of his same type in the BoardSection of the player that played
    * the observable.
    *
-   * @param observable A obserbable object to shot a update in the observer.
-   * @param value      a value to use in the update.
+   * @param observable A observable object to shot a update in the observer.
+   * @param value      a Effect to use in the update.
    */
-  def update(observable: Card, value: Effect): Unit = {
-    value(observable, this)
+  def update(observable: Subject[Effect], value: Effect): Unit = {
+    value(this)
   }
 
   /** Get the list of cards.
@@ -59,7 +58,7 @@ class CardList extends Observer {
    * @param card The card to evaluate.
    * @return true if the list contains the card, false otherwise.
    */
-  def contains(card: Subject): Boolean = {
+  def contains(card: Subject[Effect]): Boolean = {
     cards.contains(card)
   }
 

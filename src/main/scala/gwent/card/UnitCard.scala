@@ -2,9 +2,8 @@ package cl.uchile.dcc
 package gwent.card
 
 import gwent.board.BoardSection
-
 import gwent.card.effect.{Effect, NullEffect}
-import gwent.observer.{Observer, Subject}
+import gwent.observer.Observer
 
 import java.util.Objects
 
@@ -32,20 +31,20 @@ abstract class UnitCard(val name: String, val description: String, var strength:
   }
 
   /** List of observers */
-  protected var observers: List[Observer] = List()
+  protected var observers: List[Observer[Effect]] = List()
 
   /** Add a observer to the observer list.
    *
    * @param observer the new observer to add.
    */
-  def addObserver(observer: Observer): Unit = {
+  def addObserver(observer: Observer[Effect]): Unit = {
     observers = observer :: observers
   }
 
 
   /** Apply update method to all observers in the observer list.
    *
-   * @param value a value to notify to the observers of the subject.
+   * @param value a Effect value to notify to the observers of the subject.
    */
   def notifyObserver(value: Effect): Unit = {
     for (observer <- observers) {

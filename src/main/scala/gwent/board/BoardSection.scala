@@ -2,17 +2,16 @@ package cl.uchile.dcc
 package gwent.board
 
 import gwent.card.{Card, MeleeCard, RangedCard, SiegeCard, UCard, WeatherCard}
-
 import gwent.card.effect.Effect
-import gwent.observer.Observer
+import gwent.observer.{Observer, Subject}
 
 /** Class representing a board section from one player.
  *
  * This class is mainly responsible for organizing each play of the different types of cards.
  *
- * @param board The board linked to this section
+ * @param board The board linked to this section.
  */
-class BoardSection(board: Board) extends Observer {
+class BoardSection(board: Board) extends Observer[Effect] {
   
   /** List for Melee cards zone */
   private val meleeZone: CardList = new CardList()
@@ -24,13 +23,13 @@ class BoardSection(board: Board) extends Observer {
   /** Apply the effect of the observable to all the cards of the player
    * with the same type of the observable.
    *
-   * @param observable A obserbable object to shot a update in the observer.
-   * @param value      a value to use in the update.
+   * @param observable A observable object to shot a update in the observer.
+   * @param value      a Effect to use in the update.
    */
-  def update(observable: Card, value: Effect): Unit = {
-    value(observable, meleeZone)
-    value(observable, rangedZone)
-    value(observable, siegeZone)
+  def update(observable: Subject[Effect], value: Effect): Unit = {
+    value(meleeZone)
+    value(rangedZone)
+    value(siegeZone)
   }
 
   /** Check if the board section contains a card.

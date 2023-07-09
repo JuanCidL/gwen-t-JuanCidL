@@ -3,7 +3,7 @@ package gwent.card
 
 import gwent.board.BoardSection
 import gwent.card.effect.{Effect, NullEffect}
-import gwent.observer.{Observer, Subject}
+import gwent.observer.Observer
 
 import java.util.Objects
 
@@ -27,12 +27,16 @@ class WeatherCard(val name: String, val description: String)
   }
 
   /** List of observers of the card */
-  protected var observers: List[Observer] = List()
+  protected var observers: List[Observer[Effect]] = List()
 
-  def addObserver(observer: Observer): Unit = {
+  def addObserver(observer: Observer[Effect]): Unit = {
     observers = observer :: observers
   }
 
+  /** Apply update method to all observers in the observer list.
+   *
+   * @param value a Effect value to notify to the observers of the subject.
+   */
   def notifyObserver(value: Effect): Unit = {
     for (observer <- observers) {
       observer.update(this, value)

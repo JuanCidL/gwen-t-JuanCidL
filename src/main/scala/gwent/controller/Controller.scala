@@ -1,13 +1,19 @@
 package cl.uchile.dcc
 package gwent.controller
 
+import gwent.observer.{Observer, Subject}
+
 /** Class representing a controller for the card game.
  *
  * It is responsible for managing the creation of the necessary resources for the game
  * such as cards, players and boards.
  * In addition, it is responsible for changing states according to the flow of the game.
  */
-class Controller(){
+class Controller() extends Observer[String]{
+
+  def update(observable: Subject[String], value: String): Unit = {
+    println(s"${value} has been defeated")
+  }
 
   /** Current state of the game */
   private var _state: GameState = new InitializationState(this)

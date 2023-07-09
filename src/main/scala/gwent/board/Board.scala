@@ -1,10 +1,9 @@
 package cl.uchile.dcc
 package gwent.board
 
-import gwent.card.{Card, WeatherCard}
-
-import cl.uchile.dcc.gwent.card.effect.Effect
-import cl.uchile.dcc.gwent.observer.{Observer, Subject}
+import gwent.card.WeatherCard
+import gwent.card.effect.Effect
+import gwent.observer.{Observer, Subject}
 
 /** Class representing a board of the card game Gwent
  *
@@ -13,16 +12,16 @@ import cl.uchile.dcc.gwent.observer.{Observer, Subject}
  *
  * This class is responsible for the weather card zone.
  */
-class Board extends Observer {
+class Board extends Observer[Effect] {
   /** Weather cards board section (it starts with a empty card) */
   private var _weatherCardZone: WeatherCard = new WeatherCard("", "")
 
   /** Apply the effect of the observable card to both Zones of cards.
    * 
-   * @param observable A obserbable object to shot a update in the observer.
-   * @param value      a value to use in the update.
+   * @param observable A observable object to shot a update in the observer.
+   * @param value      a Effect to use in the update.
    */
-  def update(observable: Card, value: Effect): Unit = {
+  def update(observable: Subject[Effect], value: Effect): Unit = {
     p1Zone.update(observable, value)
     p2Zone.update(observable, value)
   }

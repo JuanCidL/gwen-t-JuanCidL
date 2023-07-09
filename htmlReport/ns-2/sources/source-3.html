@@ -1,0 +1,128 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > SiegeCard</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">cl.uchile.dcc.gwent.card</a>
+</div>
+
+<h1>Coverage Summary for Class: SiegeCard (cl.uchile.dcc.gwent.card)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SiegeCard</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package cl.uchile.dcc
+&nbsp;package gwent.card
+&nbsp;
+&nbsp;import gwent.board.BoardSection
+&nbsp;
+&nbsp;/** Class representing a siege unit card.
+&nbsp; *
+&nbsp; * Siege cards can only be placed in the siege combat zone.
+&nbsp; *
+&nbsp; * @param name        The name of the card.
+&nbsp; * @param description The description of the card, explaining its abilities.
+<b class="fc">&nbsp; * @param strength    The strength of the card.</b>
+&nbsp; */
+<b class="fc">&nbsp;class SiegeCard(name: String, description: String, strength: Int) extends UnitCard(name, description, strength) {</b>
+&nbsp;
+&nbsp;  /** This method tells the board that the type of card will be siege.
+&nbsp;   *
+&nbsp;   * The card calls the method of playing with the siege card of the board section, using itself.
+&nbsp;   *
+&nbsp;   * @param section Is the section of the board to use.
+&nbsp;   */
+<b class="fc">&nbsp;  def play(section: BoardSection): Unit = {</b>
+<b class="fc">&nbsp;    section.playSiegeCard(this)</b>
+&nbsp;  }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-05-21 01:49</div>
+</div>
+</body>
+</html>

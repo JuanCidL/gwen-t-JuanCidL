@@ -2,7 +2,7 @@ package cl.uchile.dcc
 package gwent.card
 
 import gwent.board.BoardSection
-import gwent.card.effect.{Effect, NullEffect}
+import gwent.card.effect.{Effect, NullEffect, WeatherEffect}
 import gwent.observer.Observer
 
 import java.util.Objects
@@ -22,7 +22,7 @@ class WeatherCard(val name: String, val description: String)
    *
    * @param e the new effect to set.
    */
-  def setEffect(e: Effect): Unit = {
+  def setEffect(e: WeatherEffect): Unit = {
     effect = e
   }
 

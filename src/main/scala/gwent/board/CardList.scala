@@ -1,14 +1,17 @@
 package cl.uchile.dcc
 package gwent.board
 
-import gwent.card.effect.Effect
+import gwent.card.effect.{Effect, WeatherEffect}
 import gwent.card.UCard
 import gwent.observer.{Observer, Subject}
 
 /** Class representing a list of Cards
  */
-class CardList extends Observer[Effect] {
-  private var _cards: List[UCard] = List()
+class CardList[T <: UCard] extends Observer[Effect] {
+
+  def accept(visitor: WeatherEffect): Unit = {}
+
+  private var _cards: List[T] = List()
 
   /** Apply the effect of the observable object to all cards
    * of his same type in the BoardSection of the player that played
@@ -24,14 +27,14 @@ class CardList extends Observer[Effect] {
   /** Get the list of cards.
    * @return the list of cards.
    */
-  def cards: List[UCard] = _cards
+  def cards: List[T] = _cards
 
 
   /** Add a new Card to the list of Cards `C`
    *
    * @param card The new Card to add to the list
    */
-  def addCard(card: UCard): Unit = {
+  def addCard(card: T): Unit = {
     _cards = card :: cards
   }
 

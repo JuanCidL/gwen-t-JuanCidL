@@ -2,7 +2,7 @@ package cl.uchile.dcc
 package gwent.card
 
 import gwent.board.BoardSection
-import gwent.card.effect.{Effect, NullEffect}
+import gwent.card.effect.{Effect, NullEffect, UnitEffect}
 import gwent.observer.Observer
 
 import java.util.Objects
@@ -26,7 +26,7 @@ abstract class UnitCard(val name: String, val description: String, var strength:
    * 
    * @param e the new effect to set.
    */
-  def setEffect(e: Effect): Unit = {
+  def setEffect(e: UnitEffect): Unit = {
     effect = e
   }
 
@@ -51,21 +51,6 @@ abstract class UnitCard(val name: String, val description: String, var strength:
       observer.update(this, value)
     }
   }
-
-  /** Check if the card is a melee card.
-   * @return true if the card is a melee card, false otherwise.
-   */
-  def isMelee: Boolean = false
-
-  /** Check if the card is a ranged card.
-   * @return true if the card is a ranged card, false otherwise.
-   */
-  def isRanged: Boolean = false
-
-  /** Check if the card is a siege card.
-   * @return true if the card is a siege card, false otherwise.
-   */
-  def isSiege: Boolean = false
 
   override def equals(obj: Any): Boolean = {
     if (this.getClass.getName == obj.getClass.getName) {

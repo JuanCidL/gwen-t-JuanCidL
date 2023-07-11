@@ -19,13 +19,7 @@ trait Card  extends Subject[Effect]{
   protected var effect: Effect
   /** The observers of the card */
   protected var observers: List[Observer[Effect]]
-
-  /** Set an effect for the card.
-   *
-   * @param e the new effect to set.
-   */
-  def setEffect(e: Effect): Unit
-
+  
   /** This method has the purpose of redirecting to the corresponding method
    * of the card to be played on the board.
    * 

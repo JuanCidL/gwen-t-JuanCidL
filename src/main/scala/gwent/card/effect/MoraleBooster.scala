@@ -6,13 +6,14 @@ import gwent.card.UCard
 
 /** Class representing a morale booster effect.
  */
-class MoraleBooster extends Effect {
+class MoraleBooster extends UnitEffect {
   /** Apply a moral booster to all cards of the same type as the self value
    * , and increase in 1 the strength.
    *
    * @param target the card list to apply the effect
+   * @tparam T a subclass of UCard.
    */
-  def apply(target: CardList): Unit = {
+  def apply[T <: UCard](target: CardList[T]): Unit = {
     val self: UCard = target.cards.head
     target.cards.foreach{
       element =>

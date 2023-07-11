@@ -2,10 +2,15 @@
 
 class Player{
     +name: String
-    +gems: Int
+    -_gems: Int
     -_deck: List[Card]
     -_hand: List[Card]
     -_boardSection: BoardSection
+    - observers: List[Observer[Player]]
+    +addObserver(observer: Observer[Player])
+    +notifyObserver(value: Player): Unit
+    + gems(): Int
+    + gems_(gems: Int): Unit
     +boardSection(): BoardSection
     +boardSection_(): BoardSection
     +deck(): List[Card]
@@ -16,72 +21,68 @@ class Player{
     +countDeck(): Int
     +countHand(): Int
 }
+Subject <|.. Player
+BoardSection <-- Player
+Card <-- Player
 
-interface CardSubject{
-    +addObserver(observer: CardObserver): Unit
-    +notifyObserver(value: Effect): Unit
-}
-
-interface CardObserver{
-    +update(observable: Card, value: Effect): Unit
-}
 
 interface Card{
     +name: String
     +description: String
     #effect: Effect
-    #observers: List[CardObserver]
-    +setEffect(e: Effect): Unit
+    #observers: List[Observer]
     +play(section: BoardSection): Unit
 }
+Subject <|.. Card
+Effect <-- Card
+BoardSection <-- Card
 
 interface UCard{
     +strength: Int
     +currentStrength: Int
-    +isMelee(): Boolean
-    +isRanged(): Boolean
-    +isSiege(): Boolean
 }
+Card <|.. UCard
 
 abstract class UnitCard{
     +name: String
     +description: String
     +strength: Int
+    +currentStrength
     #effect: Effect
-    #observers: List[CardObserver]
+    #observers: List[Observer]
     +setEffect(e: Effect)
-    +addCardObserver(observer: CardObserver): Unit
-    +notifyCardObserver(value: Effect): Unit
-    +isMelee(): Boolean
-    +isRanged(): Boolean
-    +isSiege(): Boolean
+    +addObserver(observer: Observer): Unit
+    +notifyObserver(value: Effect): Unit
     +equals(obj: Any): Boolean
     +hashCode(): Int
 }
+
 class MeleeCard{
     +play(): Unit
-    +isMelee(): Boolean
 }
+UnitCard <|-- MeleeCard
 class RangedCard{
     +play(): Unit
-    +isRanged(): Boolean
 }
+UnitCard <|-- RangedCard
 class SiegeCard{
     +play(): Unit
-    +isSiege(): Boolean
 }
+UnitCard <|-- SiegeCard
+
 class WeatherCard{
     +name: String
     +description: String
     #effect: Effect
-    #observers: List[CardObserver]
+    #observers: List[Observer]
     +setEffect(e: Effect)
-    +addCardObserver(observer: CardObserver): Unit
-    +notifyCardObserver(value: Effect): Unit
+    +addObserver(observer: Observer): Unit
+    +notifyObserver(value: Effect): Unit
     +play(): Unit
     +equals(obj: Any): Boolean
     +hashCode(): Int
 }
+Card <|.. WeatherCard
 
 class Board{
     -_weatherCardZone: WeatherCard
@@ -92,29 +93,63 @@ class Board{
     +p1Zone(): BoardSection
     +p2Zone(): BoardSection
 }
+WeatherCard <-- Board
+BoardSection --o Board
+
 class BoardSection{
     +board: Board
-    -meleeZone: CardList
-    -rangedZone: CardList
-    -siegeZone: CardList
-    +update(observable: Card, value: Effect): Unit
+    -meleeZone: MeleeZone
+    -rangedZone: RangedZone
+    -siegeZone: SiegeZone
+    +update(observable: Subject[Effect], value: Effect): Unit
     +contains(card: Card): Boolean
     +playMeleeCard(card: MeleeCard): Unit
     +playRangedCard(card: RangedCard): Unit
     +playSiegeCard(card: SiegeCard): Unit
     +playWeatherCard(card: WeatherCard): Unit
 }
+Observer <|.. BoardSection
+MeleeZone <-- BoardSection
+RangedZone <-- BoardSection
+SiegeZone <-- BoardSection
+Board <-- BoardSection
+Effect <-- BoardSection
+Card <-- BoardSection
 
-class CardList{
-    -_cards: List[UCard]
-    +update(observable: Card, value: Effect): Unit
-    +cards(): List[UCard]
-    +addCard(card: UCard): Unit
-    +contains(card: CardSubject): Boolean
+class CardList<T: UCard>{
+    -_cards: List[T]
+    +accept(visitor: WeatherEffect): Unit
+    +update(observable: Subject[Effect], value: Effect): Unit
+    +cards(): List[T]
+    +addCard(card: T): Unit
+    +contains(card: Subject[Effect]): Boolean
 }
+Observer <|.. CardList
+UCard <-- CardList
+Effect <-- CardList
+class MeleeZone{
+    +accept(visitor: WeatherEffect): Unit
+}
+CardList <|-- MeleeZone
+MeleeCard <-- MeleeZone
+WeatherEffect <-- MeleeZone
+class RangedZone{
+    +accept(visitor: WeatherEffect): Unit
+}
+CardList <|-- RangedZone
+RangedCard <-- RangedZone
+WeatherEffect <-- RangedZone
+class SiegeZone{
+    +accept(visitor: WeatherEffect): Unit
+}
+CardList <|-- SiegeZone
+SiegeCard <-- SiegeZone
+WeatherEffect <-- SiegeZone
+
 
 class Controller{
     -_state: GameState
+    +update(observable: Subject[Player], value: Player): Unit
     +state(): GameState
     +changeState(newState: GameState): Unit
     +isInitialization(): Boolean
@@ -126,6 +161,9 @@ class Controller{
     +endGame()
     +restart()
 }
+Observer <|.. Controller
+Player <-- Controller
+GameState <-- Controller
 
 class GameState{
     -controller: Controller
@@ -141,121 +179,127 @@ class GameState{
     +changeState(state: GameState): Unit
     +setController(controller: Controller): Unit
 }
+Controller <-- GameState
+ErrorState <-- GameState
 
 class InitializationState{
     -controller: Controller
     +gameStart(): Unit
     +isInitialization(): Boolean
 }
+GameState <|-- InitializationState
+Controller <-- GameState
 
 class PlayerState{
     -controller: Controller
     +endGame(): Unit
 }
+GameState <|-- PlayerState
+Controller <-- GameState
 
 class PlayerPlayingState{
     -controller: Controller
     +endTurn(): Unit
     +isPlayerPlaying(): Boolean
 }
+GameState <|-- PlayerPlayingState
+Controller <-- GameState
 
 class CPUPlayingState{
     -controller: Controller
     +endTurn(): Unit
     +isCPUPlaying(): Boolean
 }
+GameState <|-- CPUPlayingState
+Controller <-- GameState
 
 class EndGameState{
     -controller: Controller
     +restart(): Unit
     +isEndGame(): Boolean
 }
+GameState <|-- EndGameState
+Controller <-- GameState
 
 class ErrorState{
     +message: String
 }
 
+
+
 interface Effect{
-    +apply(self: Card, target: CardList): Unit
+    +apply[T <: UCard](target: CardList[T]): Unit
 }
+CardList <-- Effect
 
 class NullEffect{
     +apply(self: Card, target: CardList): Unit
 }
+Effect <|.. NullEffect
+
+
+interface UnitEffect
+Effect <|.. UnitEffect
 
 class MoraleBooster{
-    +apply(self: Card, target: CardList): Unit
+    +apply[T <: UCard](target: CardList[T]): Unit
 }
+UnitEffect <|.. MoraleBooster
 
 class CloseBond{
-    +apply(self: Card, target: CardList): Unit
+    +apply[T <: UCard](target: CardList[T]): Unit
 }
+UnitEffect <|.. CloseBond
+
+
+
+interface WeatherEffect{
+    +applyMelee(zone: MeleeZone): Unit
+    +applyRanged(zone: RangedZone): Unit
+    +applySiege(zone: SiegeZone): Unit
+}
+Effect <|.. WeatherEffect
+UCard <-- WeatherEffect
+
+abstract class AWeatherEffect{
+    +apply[T <: UCard](target: CardList[T]): Unit
+    +applyMelee(zone: MeleeZone): Unit
+    +applyRanged(zone: RangedZone): Unit
+    +applySiege(zone: SiegeZone): Unit
+}
+WeatherEffect <|.. AWeatherEffect
 
 class HoarFrost{
-    +apply(self: Card, target: CardList): Unit
+    +applyMelee(zone: MeleeZone): Unit
 }
+AWeatherEffect <|-- HoarFrost
 
 class ImpenetrableFog{
-    +apply(self: Card, target: CardList): Unit
+    +applyRanged(zone: RangedZone): Unit
 }
+AWeatherEffect <|-- ImpenetrableFog
 
 class TorrentialRain{
-    +apply(self: Card, target: CardList): Unit
+    +applySiege(zone: SiegeZone): Unit
 }
+AWeatherEffect <|-- TorrentialRain
 
 class ClearWeather{
-    +apply(self: Card, target: CardList): Unit
+    +apply[T <: UCard](target: CardList[T]): Unit
+}
+AWeatherEffect <|-- ClearWeather
+
+
+interface Observer<T>{
+    +update(observable: Subject[T], value: T): Unit
 }
 
-/' Player relations '/
-Player o-- Card
-Player <-- BoardSection
-/' End '/
+interface Subject<T>{
+    +addObserver(observer: Observer[T]): Unit
+    +notifyObserver(value: T): Unit
+}
+Observer --o Subject
 
-/' Cards relations '/
-CardSubject <|..Card
-Card <|.. UCard
-UCard <|.. UnitCard
-Card <|... WeatherCard
-UnitCard <|-- MeleeCard
-UnitCard <|-- RangedCard
-UnitCard <|-- SiegeCard
-/' End '/
 
-/' Controller - states '/
-Controller -- GameState
-GameState <|-- InitializationState
-GameState <|-- PlayerState
-PlayerState <|-- PlayerPlayingState
-PlayerState <|-- CPUPlayingState
-GameState <|-- EndGameState
-GameState <-- ErrorState
-/' End '/
-
-/' Start observer relation UML '/
-CardSubject <- CardObserver
-Card o-- CardObserver
-
-CardObserver <|.. Board
-Board o--> BoardSection
-Board <-- WeatherCard
-
-CardObserver <|.. BoardSection
-BoardSection o-- Card
-BoardSection o-- CardList
-/' End '/
-
-/' Effects '/
-/'CardObserver <-- Effect
-CardSubject <-- Effect'/
-Card <-- Effect
-Effect <|... NullEffect
-Effect <|.. MoraleBooster
-Effect <|.. CloseBond
-Effect <|... HoarFrost
-Effect <|.. ImpenetrableFog
-Effect <|... TorrentialRain
-Effect <|.. ClearWeather
-/' End '/
 
 @enduml

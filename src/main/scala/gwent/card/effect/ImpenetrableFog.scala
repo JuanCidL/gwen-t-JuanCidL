@@ -1,21 +1,22 @@
 package cl.uchile.dcc
 package gwent.card.effect
 
-import gwent.board.CardList
+
+import gwent.card.UCard
+import gwent.board.RangedZone
 
 /** Class representing a impenetrable fog effect.
  */
-class ImpenetrableFog extends Effect {
+class ImpenetrableFog extends AWeatherEffect {
 
-  /** Set the strength to 1, to all ranged cards
-   *
-   * @param target the card list to apply the effect
+
+  /** Set the strength to 1, to all ranged cards.
+   * 
+   * @param zone the zone where the cards are placed.
    */
-  def apply(target: CardList): Unit = {
-    target.cards.foreach {
-      element =>
-        if (element.isRanged)
-          element.currentStrength = 1
+  override def applyRanged(zone: RangedZone): Unit = {
+    zone.cards.foreach {
+      element => element.currentStrength = 1
     }
   }
 }

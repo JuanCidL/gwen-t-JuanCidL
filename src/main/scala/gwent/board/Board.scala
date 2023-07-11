@@ -12,19 +12,10 @@ import gwent.observer.{Observer, Subject}
  *
  * This class is responsible for the weather card zone.
  */
-class Board extends Observer[Effect] {
+class Board {
   /** Weather cards board section (it starts with a empty card) */
   private var _weatherCardZone: WeatherCard = new WeatherCard("", "")
 
-  /** Apply the effect of the observable card to both Zones of cards.
-   * 
-   * @param observable A observable object to shot a update in the observer.
-   * @param value      a Effect to use in the update.
-   */
-  def update(observable: Subject[Effect], value: Effect): Unit = {
-    p1Zone.update(observable, value)
-    p2Zone.update(observable, value)
-  }
 
   /** Get the card of the weather zone
    * @return the card on the weather zone

@@ -1,7 +1,7 @@
 package cl.uchile.dcc
 package gwent.board
 
-import gwent.card.{Card, MeleeCard, RangedCard, SiegeCard, UCard, WeatherCard}
+import gwent.card.{Card, MeleeCard, RangedCard, SiegeCard, WeatherCard}
 import gwent.card.effect.Effect
 import gwent.observer.{Observer, Subject}
 
@@ -14,11 +14,11 @@ import gwent.observer.{Observer, Subject}
 class BoardSection(board: Board) extends Observer[Effect] {
   
   /** List for Melee cards zone */
-  private val meleeZone: CardList = new CardList()
+  private val meleeZone: MeleeZone  = new MeleeZone()
   /** List for Ranged cards zone */
-  private val rangedZone: CardList = new CardList()
+  private val rangedZone: RangedZone = new RangedZone()
   /** List for Siege cards zone */
-  private val siegeZone: CardList = new CardList()
+  private val siegeZone: SiegeZone = new SiegeZone()
 
   /** Apply the effect of the observable to all the cards of the player
    * with the same type of the observable.
@@ -74,6 +74,7 @@ class BoardSection(board: Board) extends Observer[Effect] {
    */
   def playWeatherCard(card: WeatherCard): Unit = {
     board.weatherCardZone_(card)
-    card.addObserver(board)
+    card.addObserver(board.p1Zone)
+    card.addObserver(board.p2Zone)
   }
 }

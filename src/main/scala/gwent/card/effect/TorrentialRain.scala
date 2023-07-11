@@ -1,21 +1,19 @@
 package cl.uchile.dcc
 package gwent.card.effect
 
-import gwent.board.CardList
+import gwent.board.{CardList, SiegeZone}
+import gwent.card.UCard
 
 /** Class representing a torrential rain effect.
  */
-class TorrentialRain extends Effect {
-
+class TorrentialRain extends AWeatherEffect {
+  
   /** Set the strength to 1, to all siege cards
-   *
-   * @param target the card list to apply the effect
+   * @param zone the zone where the cards are placed.
    */
-  def apply(target: CardList): Unit = {
-    target.cards.foreach{
-      element =>
-        if (element.isSiege)
-          element.currentStrength = 1
+  override def applySiege(zone: SiegeZone): Unit = {
+    zone.cards.foreach{
+      element => element.currentStrength = 1
     }
   }
 }

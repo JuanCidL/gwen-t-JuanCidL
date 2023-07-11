@@ -23,10 +23,4 @@ class RangedCard(name: String, description: String, strength: Int) extends UnitC
     section.playRangedCard(this)
     notifyObserver(effect)
   }
-
-  /** Check if the card is a ranged card.
-   *
-   * @return true if the card is a ranged card, false otherwise.
-   */
-  override def isRanged: Boolean = true
 }

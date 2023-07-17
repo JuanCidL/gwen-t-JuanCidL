@@ -13,12 +13,14 @@ state InGame {
     PlayerPlaying --> end
     CPUPlaying --> end
 }
-state EndGame: The end state of the game
+state EndGame: The end round state of the game
+state End: The end state of the game
 
 
 [*] -> Initialization
 Initialization --> start: gameStart
 end --> EndGame: endGame
 EndGame --> start: restart
+EndGame --> End: end
 
 @enduml

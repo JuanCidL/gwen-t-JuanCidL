@@ -9,9 +9,9 @@ class InitializationState(controller: Controller)
   extends GameState(controller: Controller) {
   override def gameStart(): Unit = {
     if (Math.random()>0.5)
-      this.changeState(new PlayerPlayingState(controller: Controller))
+      this.changeState(new PlayerPlayingState(controller))
     else
-      this.changeState(new CPUPlayingState(controller: Controller))
+      this.changeState(new CPUPlayingState(controller))
   }
 
   override def isInitialization(): Boolean = true

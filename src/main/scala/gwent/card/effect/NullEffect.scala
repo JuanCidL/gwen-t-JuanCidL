@@ -3,7 +3,7 @@ package gwent.card.effect
 
 import gwent.card.UCard
 
-import cl.uchile.dcc.gwent.board.CardList
+import gwent.board.CardList
 
 /** A class representing no effect.
  */

@@ -6,9 +6,9 @@ class Player{
     -_deck: List[Card]
     -_hand: List[Card]
     -_boardSection: BoardSection
-    - observers: List[Observer[Player]]
-    +addObserver(observer: Observer[Player])
-    +notifyObserver(value: Player): Unit
+    - observers: List[Observer[Notification]]
+    +addObserver(observer: Observer[Notification])
+    +notifyObserver(value: Notification): Unit
     + gems(): Int
     + gems_(gems: Int): Unit
     +boardSection(): BoardSection
@@ -24,6 +24,7 @@ class Player{
 Subject <|.. Player
 BoardSection <-- Player
 Card <-- Player
+Notification --o Player
 
 
 interface Card{
@@ -149,7 +150,7 @@ WeatherEffect <-- SiegeZone
 
 class Controller{
     -_state: GameState
-    +update(observable: Subject[Player], value: Player): Unit
+    +update(observable: Subject[Notification], value: Notification): Unit
     +state(): GameState
     +changeState(newState: GameState): Unit
     +isInitialization(): Boolean
@@ -164,6 +165,7 @@ class Controller{
 Observer <|.. Controller
 Player <-- Controller
 GameState <-- Controller
+Notification <-- Controller
 
 class GameState{
     -controller: Controller
@@ -188,14 +190,12 @@ class InitializationState{
     +isInitialization(): Boolean
 }
 GameState <|-- InitializationState
-Controller <-- GameState
 
 class PlayerState{
     -controller: Controller
     +endGame(): Unit
 }
 GameState <|-- PlayerState
-Controller <-- GameState
 
 class PlayerPlayingState{
     -controller: Controller
@@ -203,7 +203,6 @@ class PlayerPlayingState{
     +isPlayerPlaying(): Boolean
 }
 GameState <|-- PlayerPlayingState
-Controller <-- GameState
 
 class CPUPlayingState{
     -controller: Controller
@@ -211,7 +210,6 @@ class CPUPlayingState{
     +isCPUPlaying(): Boolean
 }
 GameState <|-- CPUPlayingState
-Controller <-- GameState
 
 class EndGameState{
     -controller: Controller
@@ -219,7 +217,12 @@ class EndGameState{
     +isEndGame(): Boolean
 }
 GameState <|-- EndGameState
-Controller <-- GameState
+
+class EndState{
+    -controller: Controller
+    +isEnd(): Boolean
+}
+GameState <|-- EndState
 
 class ErrorState{
     +message: String
@@ -300,6 +303,16 @@ interface Subject<T>{
 }
 Observer --o Subject
 
+interface Notification{
+    -sender: String
+    +message: String
+}
+
+interface Loose{
+    -sender: String
+    +message: String
+}
+Notification <|.. Loose
 
 
 @enduml

@@ -9,6 +9,9 @@ import gwent.observer.{Observer, Subject}
  */
 class CardList[T <: UCard] extends Observer[Effect] {
 
+  /** Accept a weather effect to apply it.
+   * @param visitor a weather effect.
+   */
   def accept(visitor: WeatherEffect): Unit = {}
 
   private var _cards: List[T] = List()

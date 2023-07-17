@@ -3,8 +3,8 @@ package gwent.player
 
 import gwent.card.Card
 import gwent.board.BoardSection
-
 import gwent.observer.{Observer, Subject}
+import gwent.observer.notification.{Loose, Notification}
 
 import scala.util.Random
 import java.util.Objects
@@ -21,19 +21,19 @@ import java.util.Objects
  * @param _hand The hand of the player.
  */
 class Player(val name: String, private var _gems: Int, private var _deck: List[Card], private var _hand: List[Card])
-    extends Subject[Player]{
+    extends Subject[Notification]{
 
   /** Board section of the player */
   private var _boardSection: BoardSection = _
 
   /** List of observers */
-  private var observers: List[Observer[Player]] = List()
+  private var observers: List[Observer[Notification]] = List()
 
   /** Add a observer to the observer list.
    *
    * @param observer the new observer to add.
    */
-  def addObserver(observer: Observer[Player]): Unit = {
+  def addObserver(observer: Observer[Notification]): Unit = {
     observers = observer :: observers
   }
 
@@ -42,7 +42,7 @@ class Player(val name: String, private var _gems: Int, private var _deck: List[C
    *
    * @param value a Int value to notify to the observers of the subject.
    */
-  def notifyObserver(value: Player): Unit = {
+  def notifyObserver(value: Notification): Unit = {
     for (observer <- observers) {
       observer.update(this, value)
     }
@@ -61,7 +61,8 @@ class Player(val name: String, private var _gems: Int, private var _deck: List[C
   def gems_(gems: Int): Unit = {
     _gems = gems
     if (gems <= 0)
-      notifyObserver(this)
+      val notification = new Loose(this.name)
+      notifyObserver(notification)
   }
 
   /** Get the player's board section.

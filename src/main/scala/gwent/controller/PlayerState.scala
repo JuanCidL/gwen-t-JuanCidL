@@ -7,5 +7,5 @@ package gwent.controller
  */
 abstract class PlayerState(controller: Controller)
   extends GameState(controller: Controller){
-  override def endGame(): Unit = this.changeState(new EndGameState(controller: Controller))
+  override def endGame(): Unit = this.changeState(new EndGameState(controller))
 }

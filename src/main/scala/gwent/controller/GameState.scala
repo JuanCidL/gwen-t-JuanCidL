@@ -39,9 +39,15 @@ class GameState(private var controller: Controller) {
 
   /** Re-set to "InGame" state from a Initialization state.
    *
-   * If called from the [] state, it will change to the target state. Otherwise, the error is called.
+   * If called from the EndGame state, it will change to the target state. Otherwise, the error is called.
    */
   def restart(): Unit = gameError("restart()")
+
+  /** End the game.
+   *
+   * If called from the EndGame state, it will change to the target state. Otherwise, the error is called.
+   */
+  def end(): Unit = gameError("end()")
   
 
   /**Check if is in initialization state
@@ -67,6 +73,12 @@ class GameState(private var controller: Controller) {
    * @return true if is in end-game state, false otherwise
    */
   def isEndGame(): Boolean = false
+
+  /**Check if is in end-game state
+   *
+   * @return true if is in end-game state, false otherwise
+   */
+  def isEnd(): Boolean = false
 
   /** Change the state of the game.
    *

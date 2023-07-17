@@ -29,6 +29,10 @@ class WeatherCard(val name: String, val description: String)
   /** List of observers of the card */
   protected var observers: List[Observer[Effect]] = List()
 
+  /** Add a observer to the observer list.
+   *
+   * @param observer the new observer to add.
+   */
   def addObserver(observer: Observer[Effect]): Unit = {
     observers = observer :: observers
   }

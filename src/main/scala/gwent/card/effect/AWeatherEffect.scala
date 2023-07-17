@@ -6,7 +6,6 @@ import gwent.board.{CardList, MeleeZone, RangedZone, SiegeZone}
 import gwent.card.UCard
 
 /** A abstract class representing a Weather Effect using visitor pattern.
- *
  */
 abstract class AWeatherEffect extends WeatherEffect {
   

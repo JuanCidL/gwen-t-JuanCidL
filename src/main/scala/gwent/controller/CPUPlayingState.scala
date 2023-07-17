@@ -7,7 +7,7 @@ package gwent.controller
  */
 class CPUPlayingState (controller: Controller)
   extends PlayerState(controller: Controller){
-  override def endTurn(): Unit = this.changeState(new PlayerPlayingState(controller: Controller))
+  override def endTurn(): Unit = this.changeState(new PlayerPlayingState(controller))
 
   override def isCPUPlaying(): Boolean = true
 }

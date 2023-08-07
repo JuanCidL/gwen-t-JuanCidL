@@ -1,0 +1,318 @@
+@startuml
+
+class Player{
+    +name: String
+    -_gems: Int
+    -_deck: List[Card]
+    -_hand: List[Card]
+    -_boardSection: BoardSection
+    - observers: List[Observer[Notification]]
+    +addObserver(observer: Observer[Notification])
+    +notifyObserver(value: Notification): Unit
+    + gems(): Int
+    + gems_(gems: Int): Unit
+    +boardSection(): BoardSection
+    +boardSection_(): BoardSection
+    +deck(): List[Card]
+    +hand(): List[Card]
+    +drawCard(): Unit
+    +playCard(card: Card): Unit
+    +shuffleDeck(): Unit
+    +countDeck(): Int
+    +countHand(): Int
+}
+Subject <|.. Player
+BoardSection <-- Player
+Card <-- Player
+Notification --o Player
+
+
+interface Card{
+    +name: String
+    +description: String
+    #effect: Effect
+    #observers: List[Observer]
+    +play(section: BoardSection): Unit
+}
+Subject <|.. Card
+Effect <-- Card
+BoardSection <-- Card
+
+interface UCard{
+    +strength: Int
+    +currentStrength: Int
+}
+Card <|.. UCard
+
+abstract class UnitCard{
+    +name: String
+    +description: String
+    +strength: Int
+    +currentStrength
+    #effect: Effect
+    #observers: List[Observer]
+    +setEffect(e: Effect)
+    +addObserver(observer: Observer): Unit
+    +notifyObserver(value: Effect): Unit
+    +equals(obj: Any): Boolean
+    +hashCode(): Int
+}
+
+class MeleeCard{
+    +play(): Unit
+}
+UnitCard <|-- MeleeCard
+class RangedCard{
+    +play(): Unit
+}
+UnitCard <|-- RangedCard
+class SiegeCard{
+    +play(): Unit
+}
+UnitCard <|-- SiegeCard
+
+class WeatherCard{
+    +name: String
+    +description: String
+    #effect: Effect
+    #observers: List[Observer]
+    +setEffect(e: Effect)
+    +addObserver(observer: Observer): Unit
+    +notifyObserver(value: Effect): Unit
+    +play(): Unit
+    +equals(obj: Any): Boolean
+    +hashCode(): Int
+}
+Card <|.. WeatherCard
+
+class Board{
+    -_weatherCardZone: WeatherCard
+    -_p1Zone: BoardSection
+    -_p2Zone: BoardSection
+    +weatherCardZone(): WeatherCard
+    +weatherCardZone_(card: WeatherCard): Unit
+    +p1Zone(): BoardSection
+    +p2Zone(): BoardSection
+}
+WeatherCard <-- Board
+BoardSection --o Board
+
+class BoardSection{
+    +board: Board
+    -meleeZone: MeleeZone
+    -rangedZone: RangedZone
+    -siegeZone: SiegeZone
+    +update(observable: Subject[Effect], value: Effect): Unit
+    +contains(card: Card): Boolean
+    +playMeleeCard(card: MeleeCard): Unit
+    +playRangedCard(card: RangedCard): Unit
+    +playSiegeCard(card: SiegeCard): Unit
+    +playWeatherCard(card: WeatherCard): Unit
+}
+Observer <|.. BoardSection
+MeleeZone <-- BoardSection
+RangedZone <-- BoardSection
+SiegeZone <-- BoardSection
+Board <-- BoardSection
+Effect <-- BoardSection
+Card <-- BoardSection
+
+class CardList<T: UCard>{
+    -_cards: List[T]
+    +accept(visitor: WeatherEffect): Unit
+    +update(observable: Subject[Effect], value: Effect): Unit
+    +cards(): List[T]
+    +addCard(card: T): Unit
+    +contains(card: Subject[Effect]): Boolean
+}
+Observer <|.. CardList
+UCard <-- CardList
+Effect <-- CardList
+class MeleeZone{
+    +accept(visitor: WeatherEffect): Unit
+}
+CardList <|-- MeleeZone
+MeleeCard <-- MeleeZone
+WeatherEffect <-- MeleeZone
+class RangedZone{
+    +accept(visitor: WeatherEffect): Unit
+}
+CardList <|-- RangedZone
+RangedCard <-- RangedZone
+WeatherEffect <-- RangedZone
+class SiegeZone{
+    +accept(visitor: WeatherEffect): Unit
+}
+CardList <|-- SiegeZone
+SiegeCard <-- SiegeZone
+WeatherEffect <-- SiegeZone
+
+
+class Controller{
+    -_state: GameState
+    +update(observable: Subject[Notification], value: Notification): Unit
+    +state(): GameState
+    +changeState(newState: GameState): Unit
+    +isInitialization(): Boolean
+    +isPlayerPlaying()
+    +isCPUPlaying()
+    +isEndGame()
+    +gameStart()
+    +endTurn()
+    +endGame()
+    +restart()
+}
+Observer <|.. Controller
+Player <-- Controller
+GameState <-- Controller
+Notification <-- Controller
+
+class GameState{
+    -controller: Controller
+    +gameError(targetState: String): Unit
+    +gameStart(): Unit
+    +endTurn(): Unit
+    +endGame(): Unit
+    +restart(): Unit
+    +isInitialization(): Boolean
+    +isPlayerPlaying(): Boolean
+    +isCPUPlaying(): Boolean
+    +isEndGame(): Boolean
+    +changeState(state: GameState): Unit
+    +setController(controller: Controller): Unit
+}
+Controller <-- GameState
+ErrorState <-- GameState
+
+class InitializationState{
+    -controller: Controller
+    +gameStart(): Unit
+    +isInitialization(): Boolean
+}
+GameState <|-- InitializationState
+
+class PlayerState{
+    -controller: Controller
+    +endGame(): Unit
+}
+GameState <|-- PlayerState
+
+class PlayerPlayingState{
+    -controller: Controller
+    +endTurn(): Unit
+    +isPlayerPlaying(): Boolean
+}
+GameState <|-- PlayerPlayingState
+
+class CPUPlayingState{
+    -controller: Controller
+    +endTurn(): Unit
+    +isCPUPlaying(): Boolean
+}
+GameState <|-- CPUPlayingState
+
+class EndGameState{
+    -controller: Controller
+    +restart(): Unit
+    +isEndGame(): Boolean
+}
+GameState <|-- EndGameState
+
+class EndState{
+    -controller: Controller
+    +isEnd(): Boolean
+}
+GameState <|-- EndState
+
+class ErrorState{
+    +message: String
+}
+
+
+
+interface Effect{
+    +apply[T <: UCard](target: CardList[T]): Unit
+}
+CardList <-- Effect
+
+class NullEffect{
+    +apply(self: Card, target: CardList): Unit
+}
+Effect <|.. NullEffect
+
+
+interface UnitEffect
+Effect <|.. UnitEffect
+
+class MoraleBooster{
+    +apply[T <: UCard](target: CardList[T]): Unit
+}
+UnitEffect <|.. MoraleBooster
+
+class CloseBond{
+    +apply[T <: UCard](target: CardList[T]): Unit
+}
+UnitEffect <|.. CloseBond
+
+
+
+interface WeatherEffect{
+    +applyMelee(zone: MeleeZone): Unit
+    +applyRanged(zone: RangedZone): Unit
+    +applySiege(zone: SiegeZone): Unit
+}
+Effect <|.. WeatherEffect
+UCard <-- WeatherEffect
+
+abstract class AWeatherEffect{
+    +apply[T <: UCard](target: CardList[T]): Unit
+    +applyMelee(zone: MeleeZone): Unit
+    +applyRanged(zone: RangedZone): Unit
+    +applySiege(zone: SiegeZone): Unit
+}
+WeatherEffect <|.. AWeatherEffect
+
+class HoarFrost{
+    +applyMelee(zone: MeleeZone): Unit
+}
+AWeatherEffect <|-- HoarFrost
+
+class ImpenetrableFog{
+    +applyRanged(zone: RangedZone): Unit
+}
+AWeatherEffect <|-- ImpenetrableFog
+
+class TorrentialRain{
+    +applySiege(zone: SiegeZone): Unit
+}
+AWeatherEffect <|-- TorrentialRain
+
+class ClearWeather{
+    +apply[T <: UCard](target: CardList[T]): Unit
+}
+AWeatherEffect <|-- ClearWeather
+
+
+interface Observer<T>{
+    +update(observable: Subject[T], value: T): Unit
+}
+
+interface Subject<T>{
+    +addObserver(observer: Observer[T]): Unit
+    +notifyObserver(value: T): Unit
+}
+Observer --o Subject
+
+interface Notification{
+    -sender: String
+    +message: String
+}
+
+interface Loose{
+    -sender: String
+    +message: String
+}
+Notification <|.. Loose
+
+
+@enduml
